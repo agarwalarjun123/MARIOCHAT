@@ -12,7 +12,7 @@ app.use('/',function(req,res,next){
   res.render('index');
 
 });
-var server=app.listen(4000,function(err,result){
+var server=app.listen(process.env.PORT,function(err,result){
   console.log("connected");
 });
 var io=socket(server);
