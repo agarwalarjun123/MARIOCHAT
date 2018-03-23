@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      #display{
+        height:300px;
+        border-radius:4px;
+
+      }
+    </style>
+    <title></title>
+  </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+  <body>
+
+<div id='display' ></div>
+<div id='message'>
+<input type='text' style='width:50%;margin:auto;display:block;' placeholder="message" id='text'>
+<input type='text' style='width:50%;margin:auto;display:block;' placeholder="handler" id='handler'>
+
+</div><br>
+<center><button id='b1'>Message</button></center>
+
+  </body>
+<script>
+var message=document.getElementById("text");
+var handler=document.getElementById("handler");
+
+var socket=io.connect("http://localhost:4000");
+
+$("#b1").click(function(){
+socket.emit('chat',{
+  message:message.value,
+  handler:handler.value
+});
+});
+socket.on('chat',function(data){
+  $("#display").append("<br><b>"+data.handler+"</b><br>");
+  $("#display").append(data.message);
+
+
+});
+</script>
+
+
+</html>
