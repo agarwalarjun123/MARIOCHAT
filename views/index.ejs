@@ -30,7 +30,7 @@
 var message=document.getElementById("text");
 var handler=document.getElementById("handler");
 
-var socket=io.connect("http://localhost:4000");
+var socket=io.connect("https://secure-wave-88939.herokuapp.com/");
 
 $("#b1").click(function(){
 socket.emit('chat',{
