@@ -98,16 +98,27 @@ for(var i=0;i<arr.length;i++)
       }
   }
 });
+
 socket.on('disconnect',()=>{
 
 for(var i=0;i<arr.length;i++)
 if(arr[i].s_id==socket.id)
 arr.splice(i,1);
+
 console.log(arr);
+
 io.sockets.emit('users',{users:arr});
+
 console.log('socket closed');
 });
 socket.on('typing',(data)=>{
-socket.broadcast.emit('typing',data);
+  for(var i=0;i<arr.length;i++)
+    {
+      if(arr[i].name==data.name)
+        socket.to(arr[i].s_id).emit('typing',data);
+
+
+    }
+
 });
 });
