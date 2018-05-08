@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+.user-box{
+  border-bottom:solid 2px;
+  text-align: center;
+
+
+}
+
+
+
+
+    </style>
+  </head>
+  <body>
+    <center>
+    <h2>CHAT ROOM</h2>
+  </center>
+   <div id='users'>
+
+  </div>
+</body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script type="text/javascript">
+
+  var socket=io.connect('http://localhost:3000');
+
+  socket.emit('users',{name:'<%=name%>'});
+  socket.on('users',(data)=>{
+  document.getElementById('users').innerHTML=" ";
+  for(var i=0;i<data.users.length;i++){
+    document.getElementById('users').innerHTML+="<div class='user-box'><h4 id='id"+i+"'>"+data.users[i].name+"</h4>";
+    var name=document.getElementById("id"+i).innerHTML;
+    document.getElementById('users').innerHTML+="<a href='/test/<%=name%>/"+name+"'>Chat</a></div>";
+
+
+}
+  // document.getElementById('id'+i).onclick=function(){
+  //   socket.emit('permission',{sender:data.users[i].s_id,name:this.innerHTML});
+  // };
+
+});
+socket.on('req',(data)=>{
+    var ok=window.confirm(data.msg);
+    console.log(ok);
+    if(ok){
+      window.location.href="/test/<%=name%>/"+data.name;
+    }
+
+});
+  </script>
+</html>
