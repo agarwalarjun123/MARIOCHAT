@@ -78,7 +78,7 @@ button{
   </head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <body>
-    <p id='name'>Name:<%=name1%></p>
+    <!-- <p id='name'>Name:<%=name1%></p> -->
     <div id='user-window'>
 
     </div>
@@ -94,36 +94,68 @@ button{
   </div>
 
 <script>
-
+//name1=this user
+//name2=other user
 var socket=io.connect('http://localhost:3000/');
 var handle=document.getElementById('handle');
 var message=document.getElementById('message');
 var output=document.getElementById('output');
 var feedback=document.getElementById('feedback');
-socket.emit('req',{
-  name1:"<%=name1%>",
-  name2:"<%=name2%>"
-});
+//req event emitter
+// socket.emit('req',{
+//   //name2:other user
+//   //name1:this user
+//   name1:"<%=name1%>",
+//   name2:"<%=name2%>"
+// });
+socket.emit('change',{status:1,name:"<%=name1%>"});
+
 //message when send button is clicked
 function send(){
 socket.emit('chat',{
   message:message.value,
   handle:handle.value,
+  //name of reciever
   name:"<%=name2%>"
 })
 }
-message.addEventListener('keypress',function(){
-  socket.emit('typing',{value:handle.value,name:"<%=name2%>"});
-});
 socket.on('chat',(data)=>{
   feedback.innerHTML="";
   output.innerHTML+="<p><strong>"+data.handle+":</strong>"+data.message+"</p>";
 });
+
+//typing event emitter
+message.addEventListener('keypress',function(){
+  socket.emit('typing',{value:handle.value,name:"<%=name2%>"});
+});
+//
 //eventHandler for typing
 socket.on('typing',(data)=>{
   console.log(data);
   feedback.innerHTML="<p><em>"+data.value+" is typing a message...</em></p>";
 });
+socket.on('req',(data)=>{
+  var ok=window.confirm(data.msg);
+  if(ok){
+      //name2:
+      socket.emit("ack",{name1:"<%=name1%>",name2:data.name});
+      socket.emit('logout',{name :"<%=name2%>"});
+      window.location.href="/test/<%=name1%>/"+data.name;
+
+        }
+
+
+});
+socket.on('logout',(data)=>{
+  window.location.href="/";
+});
+//event handler for ack object
+// socket.on('ack',(data)=>{
+//   if(data.status==1)
+//   window.location.href="/test/<%=name1%>/"+<%=name2%>;
+//   else
+//   window.location.href="/chatroom";
+// });
 </script>
 </body>
 </html>

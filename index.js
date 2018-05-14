@@ -18,15 +18,18 @@ app.use(express.static('public'));
 // });
 app.post('/chatroom',(req,res,next)=>{
 var c=0;
+//checking if the user exists
 for(var i=0;i<arr.length;i++)
 {
-  if(req.body.name==arr[i] .name)
+  if(req.body.name==arr[i].name)
    c=1;
 }
+//if exists redirects to '/'
 if(c==1){
 c=0;
 res.redirect('/');
 }
+//else renders user.ejs
 else
 res.render('user',{name:req.body.name});
 });
@@ -57,19 +60,35 @@ var io=socket(server);
 io.on('connection',(socket)=>{
 console.log('made socket connection '+ socket.id);
 //event handlers for socket
-socket.on('req',(data)=>{
-
+socket.on('change',(data)=>{
   console.log(data);
   var details={
-    name:data.name1,
+    name:data.name,
     s_id:socket.id
   };
+  arr.push(details);
+  io.sockets.emit('users',{users:arr});
+
+
+
+
+
+});
+
+
+//req event handlerss
+socket.on('req',(data)=>{
+  console.log(data);
+  // var details={
+  //   name:data.name1,
+  //   s_id:socket.id
+  // };
   for(var user of arr)
   if(user.name==data.name2)
    var s2id=user.s_id;
-  arr.push(details);
-  io.sockets.emit('users',{users:arr});
-console.log(s2id);
+  // arr.push(details);
+//   io.sockets.emit('users',{users:arr});
+// console.log(s2id);
 
   socket.to(s2id).emit('req',{
     msg:data.name1+" want to chat with you",
@@ -77,7 +96,7 @@ console.log(s2id);
   });
 });
 
-//event listener for users event
+//event listener for users event for add users to the chatroom page
 socket.on('users',(data)=>{
   var details={
     name:data.name,
@@ -98,6 +117,28 @@ for(var i=0;i<arr.length;i++)
       }
   }
 });
+//event handler for ack
+socket.on('ack',(data)=>{
+  for(var i=0;i<arr.length;i++)
+    {
+      if(arr[i].name==data.name2){
+        socket.to(arr[i].s_id).emit('ack',{
+          name1:data.name1,name2:data.name2
+        });
+
+}
+    }
+
+});
+//logout event
+socket.on('logout',(data)=>{
+for(var user of arr)
+if(user.name==data.name)
+socket.to(user.s_id).emit("logout",{name:data.name});
+
+
+});
+
 
 socket.on('disconnect',()=>{
 

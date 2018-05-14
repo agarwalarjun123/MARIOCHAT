@@ -24,7 +24,7 @@
 
   </div>
 </body>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script type="text/javascript">
 
@@ -34,24 +34,36 @@
   socket.on('users',(data)=>{
   document.getElementById('users').innerHTML=" ";
   for(var i=0;i<data.users.length;i++){
-    document.getElementById('users').innerHTML+="<div class='user-box'><h4 id='id"+i+"'>"+data.users[i].name+"</h4>";
-    var name=document.getElementById("id"+i).innerHTML;
-    document.getElementById('users').innerHTML+="<a href='/test/<%=name%>/"+name+"'>Chat</a></div>";
+    document.getElementById('users').innerHTML+="<div class='user-box'><h4 id='id"+i+"'>"+data.users[i].name+"</h4><button id='b"+i+"'>Chat</button></div>";
+    
+  }
+//Jquery to get text of H4
+$("button").click(function(){
+  var ele=$(this).parent().children("h4");
+  console.log($(ele).text());
+  socket.emit('req',{name1:"<%=name%>",name2:$(ele).text()});
 
+});
 
-}
   // document.getElementById('id'+i).onclick=function(){
   //   socket.emit('permission',{sender:data.users[i].s_id,name:this.innerHTML});
   // };
 
 });
 socket.on('req',(data)=>{
+    console.log(data);
     var ok=window.confirm(data.msg);
-    console.log(ok);
     if(ok){
+      //name2:
+      socket.emit("ack",{name1:"<%=name%>",name2:data.name});
       window.location.href="/test/<%=name%>/"+data.name;
-    }
+        }
 
-});
+
+    });
+    socket.on('ack',(data)=>{
+      console.log(data);
+      window.location.href="/test/<%=name%>/"+data.name1;
+    });
   </script>
 </html>
