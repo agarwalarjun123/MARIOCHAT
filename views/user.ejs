@@ -2,19 +2,20 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="../../materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="../../materialize.min.js"></script>
+
+    <title>MARIO-CHAT</title>
     <style>
 .user-box{
-  border-bottom:solid 2px;
   text-align: center;
-
+  font-size:2em;
 
 }
-
-
-
-
-    </style>
+</style>
   </head>
   <body>
     <center>
@@ -34,8 +35,10 @@
   socket.on('users',(data)=>{
   document.getElementById('users').innerHTML=" ";
   for(var i=0;i<data.users.length;i++){
-    document.getElementById('users').innerHTML+="<div class='user-box'><h4 id='id"+i+"'>"+data.users[i].name+"</h4><button id='b"+i+"'>Chat</button></div>";
-    
+    console.log(data.users[i].name);
+    if(data["users"][i].name!="<%=name%>")
+    document.getElementById('users').innerHTML+="<div class='user-box'><h4 id='id"+i+"'>"+data.users[i].name+"</h4><button class='waves-effect red waves-light btn' id='b"+i+"'>Chat</button></div>";
+
   }
 //Jquery to get text of H4
 $("button").click(function(){

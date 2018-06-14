@@ -1,80 +1,20 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
 
     <meta charset="utf-8">
-    <style>
-    body{
-    font-family: 'Nunito';
-}
+    <link rel="stylesheet" href="../../style.css">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="../../materialize.min.css">
 
-h2{
-    font-size: 18px;
-    padding: 10px 20px;
-    color: #575ed8;
-}
+    <!-- Compiled and minified JavaScript -->
+    <script src="../../materialize.min.js"></script>
 
-#mario-chat{
-    max-width: 600px;
-    margin: 30px auto;
-    border: 1px solid #ddd;
-    box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
-    border-radius: 2px;
-}
 
-#chat-window{
-    height: 400px;
-    overflow: auto;
-    background: #f9f9f9;
-}
-
-#output p{
-    padding: 14px 0px;
-    margin: 0 20px;
-    border-bottom: 1px solid #e9e9e9;
-    color: #555;
-}
-
-#feedback p{
-    color: #aaa;
-    padding: 14px 0px;
-    margin: 0 20px;
-}
-
-#output strong{
-    color: #575ed8;
-}
-
-label{
-    box-sizing: border-box;
-    display: block;
-    padding: 10px 20px;
-}
-
-input{
-    padding: 10px 20px;
-    box-sizing: border-box;
-    background: #eee;
-    border: 0;
-    display: block;
-    width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    font-family: Nunito;
-    font-size: 16px;
-}
-
-button{
-    background: #575ed8;
-    color: #fff;
-    font-size: 18px;
-    border: 0;
-    padding: 12px 0;
-    width: 100%;
-    border-radius: 0 0 2px 2px;
-}
-    </style>
-    <title>WebSockets 101</title>
+    <title>MARIO-CHAT</title>
   </head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <body>
@@ -90,8 +30,9 @@ button{
     </div>
     <input type="text" id="handle" placeholder="enter handle" disabled value='<%= name1%>'>
     <input type="text" id="message" placeholder="enter message" value="">
-    <button type="button" id="send" onclick='send()'>SEND</button>
+    <button type="button" class="btn waves-effect waves-dark" id="send" onclick='send()'>SEND</button>
   </div>
+  <a class="waves-effect waves-light btn-small" onclick="leave('<%=name2%>',null)">LOGOUT</a>
 
 <script>
 //name1=this user
@@ -108,21 +49,16 @@ var feedback=document.getElementById('feedback');
 //   name1:"<%=name1%>",
 //   name2:"<%=name2%>"
 // });
+
+
 socket.emit('change',{status:1,name:"<%=name1%>"});
 
 //message when send button is clicked
-function send(){
-socket.emit('chat',{
-  message:message.value,
-  handle:handle.value,
-  //name of reciever
-  name:"<%=name2%>"
-})
-}
 socket.on('chat',(data)=>{
   feedback.innerHTML="";
   output.innerHTML+="<p><strong>"+data.handle+":</strong>"+data.message+"</p>";
 });
+
 
 //typing event emitter
 message.addEventListener('keypress',function(){
@@ -134,28 +70,48 @@ socket.on('typing',(data)=>{
   console.log(data);
   feedback.innerHTML="<p><em>"+data.value+" is typing a message...</em></p>";
 });
+
+
+
 socket.on('req',(data)=>{
   var ok=window.confirm(data.msg);
   if(ok){
       //name2:
+      //sending ack for req
       socket.emit("ack",{name1:"<%=name1%>",name2:data.name});
-      socket.emit('logout',{name :"<%=name2%>"});
-      window.location.href="/test/<%=name1%>/"+data.name;
-
+      // socket.emit('logout',{name2 :"<%=name2%>",name1:"<%=name1%>"});
+      // window.location.href="/test/<%=name1%>/"+data.name;
+      leave("<%=name2%>",data.name);
         }
 
 
 });
-socket.on('logout',(data)=>{
-  window.location.href="/";
-});
-//event handler for ack object
-// socket.on('ack',(data)=>{
-//   if(data.status==1)
-//   window.location.href="/test/<%=name1%>/"+<%=name2%>;
-//   else
-//   window.location.href="/chatroom";
-// });
-</script>
+    socket.on('logout',(data)=>{
+      feedback.innerHTML+="<p>"+data.name1+" is logged out....</p>";
+    });
+    function send(){
+
+    //chat event
+    socket.emit('chat',{
+      message:message.value,
+      handle:handle.value,
+      //name of reciever
+      name:"<%=name2%>"
+    })
+    }
+    function leave(reciever,reciever2){
+
+    socket.emit('logout',{name1:"<%=name1%>",name2:"<%=name2%>"});
+    if(reciever2){
+    window.location.href="/test/<%=name1%>/"+reciever2;
+    }
+    else
+    window.location.href="/";
+    }
+
+
+
+  </script>
+
 </body>
 </html>
