@@ -10,7 +10,6 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="../../materialize.min.css">
 
-    <!-- Compiled and minified JavaScript -->
     <script src="../../materialize.min.js"></script>
 
 
@@ -19,9 +18,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <body>
     <!-- <p id='name'>Name:<%=name1%></p> -->
-    <div id='user-window'>
 
-    </div>
+
   <div id='mario-chat'>
     <div id='chat-window'>
       <div id='output'>  </div>
@@ -29,10 +27,12 @@
 
     </div>
     <input type="text" id="handle" placeholder="enter handle" disabled value='<%= name1%>'>
-    <input type="text" id="message" placeholder="enter message" value="">
-    <button type="button" class="btn waves-effect waves-dark" id="send" onclick='send()'>SEND</button>
+    <input type="text" id="message" placeholder="enter message" value="" style="margin-bottom:0px;">
+    <div class='row'margin-top:0px;'>
+    <button class='col s6 btn-small' id="send" type="button" style="margin:0px;"  onclick='send()'>SEND</button>
+    <button id="logout" class='col s6 btn-small' type="button" style="margin:0px;"  onclick='leave("<%=name2%>")'>LOGOUT</button>
   </div>
-  <a class="waves-effect waves-light btn-small" onclick="leave('<%=name2%>',null)">LOGOUT</a>
+  </div>
 
 <script>
 //name1=this user
