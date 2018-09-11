@@ -28,14 +28,13 @@
     </div>
     <input type="text" id="handle" placeholder="enter handle" disabled value='<%= name1%>'>
     <input type="text" id="message" placeholder="enter message" value="" style="margin-bottom:0px;">
-    <div class='row'margin-top:0px;'>
-    <button class='col s6 btn-small' id="send" type="button" style="margin:0px;"  onclick='send()'>SEND</button>
-    <button id="logout" class='col s6 btn-small' type="button" style="margin:0px;"  onclick='leave("<%=name2%>")'>LOGOUT</button>
+    <div class='row'>
+    <button class='col s8 btn-small' id="send" type="button" style="margin:0px;"  onclick='send()'>SEND</button>
+    <button id="logout" class='col s4 btn-small red' type="button" style="margin:0px;"  onclick='leave("<%=name2%>")'>LOGOUT</button>
   </div>
   </div>
 
 <script>
-//name1=this user
 //name2=other user
 var socket=io.connect('http://localhost:3000/');
 var handle=document.getElementById('handle');
@@ -89,16 +88,19 @@ socket.on('req',(data)=>{
     socket.on('logout',(data)=>{
       feedback.innerHTML+="<p>"+data.name1+" is logged out....</p>";
     });
-    function send(){
 
-    //chat event
+
+    function send(){
+//chat event
     socket.emit('chat',{
       message:message.value,
       handle:handle.value,
       //name of reciever
       name:"<%=name2%>"
-    })
+    });
     }
+
+
     function leave(reciever,reciever2){
 
     socket.emit('logout',{name1:"<%=name1%>",name2:"<%=name2%>"});
@@ -114,4 +116,3 @@ socket.on('req',(data)=>{
   </script>
 
 </body>
-</html>
