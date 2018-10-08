@@ -19,6 +19,7 @@ app.use(express.static('public'));
 app.use(require("./routes/user"));
 
 app.post('/chatroom',(req,res,next)=>{
+var test="c";
 var c=0;
 //checking if the user exists
 for(var i=0;i<arr.length;i++)
